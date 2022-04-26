@@ -2,12 +2,17 @@ package com.savich.maksim.entity;
 
 import java.time.LocalDate;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Cascade;
 
 @Entity
 @Table(name = "customers")
@@ -20,7 +25,16 @@ public class Customer {
     private Integer age;
     private List<Order> orders;
 
+    public Customer() {
+    }
+
+    public Customer(int id, String firstName) {
+        this.id = id;
+        this.firstName = firstName;
+    }
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     public int getId() {
         return id;
@@ -66,13 +80,26 @@ public class Customer {
         this.age = age;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "customer")
     public List<Order> getOrders() {
         return orders;
     }
 
     public void setOrders(List<Order> orders) {
         this.orders = orders;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", dayOfBirth=" + dayOfBirth +
+                ", age=" + age +
+                ", orders=" + orders +
+                '}';
     }
 
 }
